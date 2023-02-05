@@ -97,7 +97,7 @@
 - Latest Version【推荐】
 
 ```
-wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/master/install.sh" && chmod 700 /root/install.sh && /root/install.sh
+wget -P /root -N --no-check-certificate "https://raw.githubusercontent.com/mack-a/v2ray-agent/patch-1/en-2_6_25-install.sh" && chmod 700 /root/en-2_6_25-install.sh && bash /root/en-2_6_25-install.sh
 ```
 
 
