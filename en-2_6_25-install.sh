@@ -521,7 +521,7 @@ showInstallStatus() {
         readInstallProtocolType
 
         if [[ -n ${currentInstallProtocolType} ]]; then
-            echoContent yellow "Install Protocol: \c"
+            echoContent yellow "Installed Protocols: \c"
         fi
         if echo ${currentInstallProtocolType} | grep -q 0; then
             if [[ "${coreInstallType}" == 2 ]]; then
