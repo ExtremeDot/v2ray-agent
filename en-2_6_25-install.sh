@@ -1619,7 +1619,7 @@ installV2Ray() {
             installV2Ray "$1"
         else
             echoContent green " ---> v2ray-core Version :$(/etc/v2ray-agent/v2ray/v2ray --version | awk '{print $2}' | head -1)"
-            read -r -p "是否更新、升级？[y/n]:" reInstallV2RayStatus
+            read -r -p "Do you want to update？[y/n]:" reInstallV2RayStatus
             if [[ "${reInstallV2RayStatus}" == "y" ]]; then
                 rm -f /etc/v2ray-agent/v2ray/v2ray
                 rm -f /etc/v2ray-agent/v2ray/v2ctl
@@ -1648,7 +1648,7 @@ installHysteria() {
         chmod 655 /etc/v2ray-agent/hysteria/hysteria
     else
         echoContent green " ---> Hysteria Version :$(/etc/v2ray-agent/hysteria/hysteria --version | awk '{print $3}')"
-        read -r -p "是否更新、升级？[y/n]:" reInstallHysteriaStatus
+        read -r -p "Do you want to Update？[y/n]:" reInstallHysteriaStatus
         if [[ "${reInstallHysteriaStatus}" == "y" ]]; then
             rm -f /etc/v2ray-agent/hysteria/hysteria
             installHysteria "$1"
@@ -1991,7 +1991,7 @@ EOF
 
 # Install hysteria开机自启
 installHysteriaService() {
-    echoContent skyBlue "\nProgress   $1/${totalProgress} :  configurationHysteria开机自启"
+    echoContent skyBlue "\nProgress   $1/${totalProgress} :  config Hysteria to start automatically. "
     if [[ -n $(find /bin /usr/bin -name "systemctl") ]]; then
         rm -rf /etc/systemd/system/hysteria.service
         touch /etc/systemd/system/hysteria.service
