@@ -2728,7 +2728,7 @@ initXrayConfig() {
     local uuid=
     local addClientsStatus=
     if [[ -n "${currentUUID}" ]]; then
-        read -r -p "读取到上次Install 记录，是否使用上次Install 时的UUID ？[y/n]:" historyUUIDStatus
+        read -r -p "Read the last Install log, Do you wanna use the UUID of the last Install ？[y/n]:" historyUUIDStatus
         if [[ "${historyUUIDStatus}" == "y" ]]; then
             addClientsStatus=true
             uuid=${currentUUID}
@@ -3485,7 +3485,7 @@ updateNginxBlog() {
 	echoContent skyBlue "\nProgress $1/${totalProgress} : Change fake site"
 	echoContent red "=============================================================="
 	echoContent yellow "# For customization, please manually copy the template file to /usr/share/nginx/html \n"
-	echoContent yellow "1.Novice guide"
+	echoContent yellow "1.Novice guide, Chinease site"
 	echoContent yellow "2.Game website"
 	echoContent yellow "3.Personal blog 01"
 	echoContent yellow "4.Enterprise Station"
@@ -5474,22 +5474,22 @@ menu() {
 	echoContent green "ERC20 donation: 0xB08b731653515b083deE362fefFc45d5eb96c35d"
 	echoContent red "=============================================================="
 	if [[ -n "${coreInstallType}" ]]; then
-		echoContent yellow "1.Reinstall"
+		echoContent yellow "1.Reinstall Automated Setup"
 	else
-		echoContent yellow "1.Install"
+		echoContent yellow "1.Automatic Install Setup"
 	fi
 
-	echoContent yellow "2.Install in any combination"
+	echoContent yellow "2.Custom Install"
 	if echo ${currentInstallProtocolType} | grep -q trojan; then
-		echoContent yellow "3.Switch VLESS[XTLS]"
+		echoContent yellow "3.Switch to VLESS[XTLS]"
 	elif echo ${currentInstallProtocolType} | grep -q 0; then
-		echoContent yellow "3.Switch Trojan[XTLS]"
+		echoContent yellow "3.Switch to Trojan[XTLS]"
 	fi
 
 	echoContent yellow "4.Hysteria management"
 	echoContent skyBlue "-------------------------Tool management--------------------"
 	echoContent yellow "5.Account Management"
-	echoContent yellow "6.Replace camouflage station"
+	echoContent yellow "6.Change Fake/Camouflage site, "
 	echoContent yellow "7.Update certificate"
 	echoContent yellow "8.Replace CDN node"
 	echoContent yellow "9.IPv6 offload"
