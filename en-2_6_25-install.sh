@@ -5450,17 +5450,14 @@ manageHysteria() {
 # 主菜单
 menu() {
 	cd "$HOME" || exit
-	echoContent red "\n=============================================================="
-	echoContent green "author:mack-a"
-	echoContent green "Current version: v2.6.25"
-	echoContent green "Github:https://github.com/mack-a/v2ray-agent"
-	echoContent green "Description: 8-in-1 coexistence script\c"
+	clear
+	echoContent red "\n=======V2RAY AGENT============================================"
+	echoContent green "author:mack-a \| Current version: v2.6.25"
+	echoContent green "Github: github.com/mack-a/v2ray-agent or Telegram: t.me/mackaff "
 	showInstallStatus
-	echoContent red "\n=============================================================="
-	echoContent red "Promotion Area"
-	echoContent green "AFF donation: https://github.com/mack-a/v2ray-agent/blob/master/documents/donation_aff.md\n"
-	echoContent green "Virtual currency donation: 0xB08b731653515b083deE362fefFc45d5eb96c35d\n"
-	echoContent green "Contact TG for promotion: https://t.me/mackaff"
+	echoContent red "\n=======SUPPORT ME============================================="	
+	echoContent green "AFF donation: https://github.com/mack-a/v2ray-agent/blob/master/documents/donation_aff.md"
+	echoContent green "ERC20 donation: 0xB08b731653515b083deE362fefFc45d5eb96c35d"
 	echoContent red "=============================================================="
 	if [[ -n "${coreInstallType}" ]]; then
 		echoContent yellow "1.Reinstall"
