@@ -12,4 +12,11 @@ mv /root/en-2_6_25-install.sh /root/install.sh
 bash /root/install.sh
 ```
 
+enter vasma to run script after installation
+```sh
+
+vasma
+```
+
 ![MainMenu](https://raw.githubusercontent.com/ExtremeDot/v2ray-agent/EnglishVersion/documents/Main.png)
+
