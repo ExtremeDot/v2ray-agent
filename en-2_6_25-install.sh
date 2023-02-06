@@ -5387,7 +5387,7 @@ switchAlpn() {
 	echoContent yellow " 1.When http/1.1 is the first, trojan is available, and some gRPC clients are available [client supports manual selection of alpn available]"
 	echoContent yellow " 2.When h2 is the first, gRPC is available, and some trojan clients are available [clients support manual selection of alpn available]"
 	echoContent yellow " 3.If the client does not support manual replacement of alpn, it is recommended to use this function to change the order of alpn on the server to use the corresponding protocol"
-	echoContent red "============================================================
+	echoContent red "============================================================"
 
 	if [[ "${currentAlpn}" == "http/1.1" ]]; then
 		echoContent yellow "1.Switch the first position of alpn h2"
