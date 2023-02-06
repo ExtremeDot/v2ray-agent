@@ -1220,7 +1220,7 @@ acmeInstallSSL() {
         if [[ -n "${txtValue}" ]]; then
 			echoContent green " ---> Please manually add DNS TXT record"
 			echoContent yellow " ---> Please refer to this tutorial for adding methods, https://github.com/mack-a/v2ray-agent/blob/master/documents/dns_txt.md"
-			echoContent yellow " ---> Just like installing a wildcard certificate on multiple machines with one domain name, please add multiple TXT records, no need to modify the previously added TXT records""
+			echoContent yellow " ---> Just like installing a wildcard certificate on multiple machines with one domain name, please add multiple TXT records, no need to modify the previously added TXT records"
 			echoContent green " --->  name：_acme-challenge"
 			echoContent green " --->  value：${txtValue}"
 			echoContent yellow " ---> Please wait for 1-2 minutes after the addition is complete"
