@@ -505,23 +505,23 @@ showInstallStatus() {
     if [[ -n "${coreInstallType}" ]]; then
         if [[ "${coreInstallType}" == 1 ]]; then
             if [[ -n $(pgrep -f xray/xray) ]]; then
-                echoContent yellow "\n核心: Xray-core[运行中]"
+                echoContent yellow "\n核心: Xray-core[Running]"
             else
-                echoContent yellow "\n核心: Xray-core[未运行]"
+                echoContent yellow "\n核心: Xray-core[Not Running]"
             fi
 
         elif [[ "${coreInstallType}" == 2 || "${coreInstallType}" == 3 ]]; then
             if [[ -n $(pgrep -f v2ray/v2ray) ]]; then
-                echoContent yellow "\n核心: v2ray-core[运行中]"
+                echoContent yellow "\n核心: v2ray-core[Running]"
             else
-                echoContent yellow "\n核心: v2ray-core[未运行]"
+                echoContent yellow "\n核心: v2ray-core[Not Running]"
             fi
         fi
         # 读取TYPE
         readInstallProtocolType
 
         if [[ -n ${currentInstallProtocolType} ]]; then
-            echoContent yellow "已Install 协议: \c"
+            echoContent yellow "Install Protocol: \c"
         fi
         if echo ${currentInstallProtocolType} | grep -q 0; then
             if [[ "${coreInstallType}" == 2 ]]; then
@@ -604,9 +604,9 @@ mkdirTools() {
     mkdir -p /tmp/v2ray-agent-tls/
 }
 
-# Install 工具包
+# Install Tools包
 installTools() {
-    echoContent skyBlue "\nProgress   $1/${totalProgress} : Install 工具"
+    echoContent skyBlue "\nProgress   $1/${totalProgress} : Install Tools"
     # 修复ubuntu个别系统问题
     if [[ "${release}" == "ubuntu" ]]; then
         dpkg --configure -a
@@ -1123,7 +1123,7 @@ echoContent red "\n ---> Multiple IPs detected, please confirm whether to close 
 			echoContent yellow " ---> The detected ip is as follows: [${localIP}]"
 			exit 0
         fi
-        echoContent green " ---> 当前域名ip为:[${localIP}]"
+        echoContent green " ---> Domain IP :[${localIP}]"
     fi
 
 }
@@ -1506,7 +1506,7 @@ installCronTLS() {
     echo "${historyCrontab}" >/etc/v2ray-agent/backup_crontab.cron
     echo "30 1 * * * /bin/bash /etc/v2ray-agent/install.sh RenewTLS >> /etc/v2ray-agent/crontab_tls.log 2>&1" >>/etc/v2ray-agent/backup_crontab.cron
     crontab /etc/v2ray-agent/backup_crontab.cron
-    echoContent green "\n ---> 添加定时维护证书成功"
+    echoContent green "\n ---> Successfully added scheduled maintenance certificate"
 }
 
 # 更新证书
@@ -1560,7 +1560,7 @@ renewalTLS() {
             reloadCore
             handleNginx start
         else
-            echoContent green " ---> 证书有效"
+            echoContent green " ---> Certificate is valid"
         fi
     else
         echoContent red " ---> 未Install "
@@ -1580,7 +1580,7 @@ checkTLStatus() {
 
         tlsStatus=${remainingDays}
         if [[ ${remainingDays} -le 0 ]]; then
-            tlsStatus="已过期"
+            tlsStatus="Expired"
         fi
 
         echoContent skyBlue " ---> 证书生成日期:$(date -d "@${modifyTime}" +"%F %H:%M:%S")"
@@ -2209,10 +2209,10 @@ initHysteriaPort() {
 		read -r -p "Port:" hysteriaPort
     fi
     if [[ -z ${hysteriaPort} ]]; then
-        echoContent red " ---> PORTNot Empty"
+        echoContent red " ---> PORT can't be empty"
         initHysteriaPort "$2"
     elif ((hysteriaPort < 1 || hysteriaPort > 65535)); then
-        echoContent red " ---> PORT不合法"
+        echoContent red " ---> Invalid Port"
         initHysteriaPort "$2"
     fi
     allowPort "${hysteriaPort}"
@@ -2241,7 +2241,7 @@ initHysteriaProtocol() {
         hysteriaProtocol="udp"
         ;;
     esac
-    echoContent yellow "\n ---> 协议: ${hysteriaProtocol}\n"
+    echoContent yellow "\n ---> Protocol: ${hysteriaProtocol}\n"
 }
 
 # initializationhysteria网络信息
@@ -2251,14 +2251,14 @@ initHysteriaNetwork() {
 	read -r -p "delay:" hysteriaLag
     if [[ -z "${hysteriaLag}" ]]; then
         hysteriaLag=180
-        echoContent yellow "\n ---> 延迟: ${hysteriaLag}\n"
+        echoContent yellow "\n ---> Delay: ${hysteriaLag}\n"
     fi
 
     echoContent yellow "Please enter the local bandwidth peak downlink speed (default: 100, unit: Mbps)"
 	read -r -p "Download speed:" hysteriaClientDownloadSpeed
     if [[ -z "${hysteriaClientDownloadSpeed}" ]]; then
         hysteriaClientDownloadSpeed=100
-        echoContent yellow "\n ---> 下行速度: ${hysteriaClientDownloadSpeed}\n"
+        echoContent yellow "\n ---> DownLink Speed: ${hysteriaClientDownloadSpeed}\n"
     fi
 
     echoContent yellow "Please enter the local bandwidth peak uplink speed (default: 50, unit: Mbps)"
@@ -3112,7 +3112,7 @@ customCDNIP() {
     echoContent yellow " 3.CNAME blog.hostmonit.com"
 
     echoContent skyBlue "----------------------------"
-    read -r -p "Please Select[回车不使用]:" selectCloudflareType
+    read -r -p "Please Select[Cant Be Empty]:" selectCloudflareType
     case ${selectCloudflareType} in
     1)
         add="www.digitalocean.com"
@@ -3144,6 +3144,7 @@ defaultBase64Code() {
         if [[ "${coreInstallType}" == "1" ]] && echo "${currentInstallProtocolType}" | grep -q 0; then
             echoContent yellow " ---> General Format(VLESS+TCP+TLS/xtls-rprx-vision)"
             echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
+			echo "vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email} " | qrencode -s 10 -m 1 -t UTF8
 
             echoContent yellow " ---> FORMAT (VLESS+TCP+TLS/xtls-rprx-vision)"
             echoContent green "TYPE:VLESS，ADDRESS:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:tcp，flow:xtls-rprx-vision，ACCOUNT:${email}\n"
@@ -3158,6 +3159,7 @@ EOF
         elif [[ "${coreInstallType}" == 2 ]]; then
             echoContent yellow " ---> General Format(VLESS+TCP+TLS)"
             echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email}\n"
+			echo "vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email} " | qrencode -s 10 -m 1 -t UTF8
 
             echoContent yellow " ---> FORMAT (VLESS+TCP+TLS)"
             echoContent green "    TYPE:VLESS，ADDRESS:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:tcp，ACCOUNT:${email}\n"
@@ -3172,6 +3174,7 @@ EOF
     elif [[ "${type}" == "trojanTCPXTLS" ]]; then
         echoContent yellow " ---> General Format(Trojan+TCP+TLS/xtls-rprx-vision)"
         echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
+		echo "trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email} " | qrencode -s 10 -m 1 -t UTF8
 
         echoContent yellow " ---> FORMAT (Trojan+TCP+TLS/xtls-rprx-vision)"
         echoContent green "TYPE:Trojan，ADDRESS:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:xtls，TRASNSPORT:tcp，flow:xtls-rprx-vision，ACCOUNT:${email}\n"
@@ -3189,6 +3192,7 @@ EOF
         echoContent green "    {\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}vws\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}\n"
         echoContent yellow " ---> Global vmess(VMess+WS+TLS)Link"
         echoContent green "    vmess://${qrCodeBase64Default}\n"
+		echo "vmess://${qrCodeBase64Default} " | qrencode -s 10 -m 1 -t UTF8
         echoContent yellow " ---> QR code vmess(VMess+WS+TLS)"
 
         cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
@@ -3200,6 +3204,7 @@ EOF
 
         echoContent yellow " ---> General Format(VLESS+WS+TLS)"
         echoContent green "    vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=ws&host=${currentHost}&sni=${currentHost}&path=/${currentPath}ws#${email}\n"
+		echo "vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=ws&host=${currentHost}&sni=${currentHost}&path=/${currentPath}ws#${email} " | qrencode -s 10 -m 1 -t UTF8
 
         echoContent yellow " ---> FORMAT (VLESS+WS+TLS)"
         echoContent green "    TYPE:VLESS，ADDRESS:${currentAdd}，FAKE DOMAIN/SNI:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:ws，PATH:/${currentPath}ws，ACCOUNT:${email}\n"
@@ -3215,7 +3220,7 @@ EOF
 
         echoContent yellow " ---> General Format(VLESS+gRPC+TLS)"
         echoContent green "    vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=grpc&host=${currentHost}&path=${currentPath}grpc&serviceName=${currentPath}grpc&alpn=h2&sni=${currentHost}#${email}\n"
-
+		echo "vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=grpc&host=${currentHost}&path=${currentPath}grpc&serviceName=${currentPath}grpc&alpn=h2&sni=${currentHost}#${email}" | qrencode -s 10 -m 1 -t UTF8
         echoContent yellow " ---> FORMAT (VLESS+gRPC+TLS)"
         echoContent green "    TYPE:VLESS，ADDRESS:${currentAdd}，FAKE DOMAIN/SNI:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:gRPC，alpn:h2，serviceName:${currentPath}grpc，ACCOUNT:${email}\n"
 
@@ -3224,48 +3229,55 @@ vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&t
 EOF
         echoContent yellow " ---> QR code VLESS(VLESS+gRPC+TLS)"
         echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dgrpc%26host%3D${currentHost}%26serviceName%3D${currentPath}grpc%26path%3D${currentPath}grpc%26sni%3D${currentHost}%26alpn%3Dh2%23${email}"
+		echo "vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dgrpc%26host%3D${currentHost}%26serviceName%3D${currentPath}grpc%26path%3D${currentPath}grpc%26sni%3D${currentHost}%26alpn%3Dh2%23${email}" | qrencode -s 10 -m 1 -t UTF8
 
     elif [[ "${type}" == "trojan" ]]; then
         # URLEncode
         echoContent yellow " ---> Trojan(TLS)"
         echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${currentHost}_Trojan\n"
+		echo "trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${currentHost}_Trojan" | qrencode -s 10 -m 1 -t UTF8
 
         cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${email}_Trojan
 EOF
         echoContent yellow " ---> QR code Trojan(TLS)"
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentHost}%3a${port}%3fpeer%3d${currentHost}%26sni%3d${currentHost}%26alpn%3Dhttp/1.1%23${email}\n"
+        echo "trojan%3a%2f%2f${id}%40${currentHost}%3a${port}%3fpeer%3d${currentHost}%26sni%3d${currentHost}%26alpn%3Dhttp/1.1%23${email} " | qrencode -s 10 -m 1 -t UTF8
+		echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentHost}%3a${port}%3fpeer%3d${currentHost}%26sni%3d${currentHost}%26alpn%3Dhttp/1.1%23${email}\n"
+		
 
     elif [[ "${type}" == "trojangrpc" ]]; then
         # URLEncode
 
         echoContent yellow " ---> Trojan gRPC(TLS)"
         echoContent green "    trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email}\n"
+		echo "trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email} " | qrencode -s 10 -m 1 -t UTF8
         cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email}
 EOF
         echoContent yellow " ---> QR code Trojan gRPC(TLS)"
         echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentAdd}%3a${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26peer%3d${currentHost}%26type%3Dgrpc%26sni%3d${currentHost}%26path%3D${currentPath}trojangrpc%26alpn%3Dh2%26serviceName%3D${currentPath}trojangrpc%23${email}\n"
+		echo "trojan%3a%2f%2f${id}%40${currentAdd}%3a${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26peer%3d${currentHost}%26type%3Dgrpc%26sni%3d${currentHost}%26path%3D${currentPath}trojangrpc%26alpn%3Dh2%26serviceName%3D${currentPath}trojangrpc%23${email} " | qrencode -s 10 -m 1 -t UTF8
 
     elif [[ "${type}" == "hysteria" ]]; then
         echoContent yellow " ---> Hysteria(TLS)"
-        echoContent green "    hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email}\n"
+		echo "hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email} " | qrencode -s 10 -m 1 -t UTF8        echoContent green "    hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email}\n"
         cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email}
 EOF
         echoContent yellow " ---> QR code Hysteria(TLS)"
+		echo "hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${email} " | qrencode -s 10 -m 1 -t UTF8
         echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${email}\n"
     fi
 
 }
 
-# 账号
+# account
 showAccounts() {
     readInstallType
     readInstallProtocolType
     readConfigHostPathUUID
     readHysteriaConfig
-    echoContent skyBlue "\nProgress  $1/${totalProgress} : 账号"
+    echoContent skyBlue "\nProgress  $1/${totalProgress} : account"
     local show
     # VLESS TCP
     if [[ -n "${configPath}" ]]; then
@@ -3275,7 +3287,7 @@ showAccounts() {
             jq .inbounds[0].settings.clients ${configPath}02_trojan_TCP_inbounds.json | jq -c '.[]' | while read -r user; do
                 local email=
                 email=$(echo "${user}" | jq -r .email)
-                echoContent skyBlue "\n ---> 账号:${email}"
+                echoContent skyBlue "\n ---> account:${email}"
                 defaultBase64Code trojanTCPXTLS "${email}" "$(echo "${user}" | jq -r .password)"
             done
 
@@ -3287,7 +3299,7 @@ showAccounts() {
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> 账号:${email}"
+                echoContent skyBlue "\n ---> account:${email}"
                 echo
                 defaultBase64Code vlesstcp "${email}" "$(echo "${user}" | jq -r .id)"
             done
@@ -3301,11 +3313,11 @@ showAccounts() {
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> 账号:${email}"
+                echoContent skyBlue "\n ---> account:${email}"
                 echo
                 local path="${currentPath}ws"
                 #	if [[ ${coreInstallType} == "1" ]]; then
-                #		echoContent yellow "Xray的0-RTT path后面会有，不兼容以v2ray为核心的客户端，请手动删除后使用\n"
+                #		echoContent yellow "There will be after the 0-RTT path of Xray, it is not compatible with the client with v2ray as the core, please delete it manually and use it\n"
                 #		path="${currentPath}ws"
                 #	fi
                 defaultBase64Code vlessws "${email}" "$(echo "${user}" | jq -r .id)"
@@ -3323,7 +3335,7 @@ showAccounts() {
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> 账号:${email}"
+                echoContent skyBlue "\n ---> account:${email}"
                 echo
                 defaultBase64Code vmessws "${email}" "$(echo "${user}" | jq -r .id)"
             done
@@ -3340,7 +3352,7 @@ showAccounts() {
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> 账号:${email}"
+                echoContent skyBlue "\n ---> account:${email}"
                 echo
                 defaultBase64Code vlessgrpc "${email}" "$(echo "${user}" | jq -r .id)"
             done
@@ -3353,7 +3365,7 @@ showAccounts() {
         jq .inbounds[0].settings.clients ${configPath}04_trojan_TCP_inbounds.json | jq -c '.[]' | while read -r user; do
             local email=
             email=$(echo "${user}" | jq -r .email)
-            echoContent skyBlue "\n ---> 账号:${email}"
+            echoContent skyBlue "\n ---> account:${email}"
 
             defaultBase64Code trojan "${email}" "$(echo "${user}" | jq -r .password)"
         done
@@ -3366,7 +3378,7 @@ showAccounts() {
             local email=
             email=$(echo "${user}" | jq -r .email)
 
-            echoContent skyBlue "\n ---> 账号:${email}"
+            echoContent skyBlue "\n ---> account:${email}"
             echo
             defaultBase64Code trojangrpc "${email}" "$(echo "${user}" | jq -r .password)"
         done
@@ -3390,7 +3402,7 @@ showAccounts() {
             email=$(echo "${defaultUser}" | jq -r .email)
 
             if [[ -n ${defaultUser} ]]; then
-                echoContent skyBlue "\n ---> 账号:${email}"
+                echoContent skyBlue "\n ---> account:${email}"
                 echo
                 defaultBase64Code hysteria "${email}" "${user}"
             fi
@@ -3426,11 +3438,11 @@ checkNginx302() {
         local domain302Result=
         domain302Result=$(curl -L -s "https://${currentHost}")
         if [[ -n "${domain302Result}" ]]; then
-            echoContent green " ---> 302重定向设置成功"
+            echoContent green " ---> 302 redirect successfully set"
             exit 0
         fi
     fi
-    echoContent red " ---> 302重定向设置失败，请仔细检查是否和示例相同"
+    echoContent red " ---> 302 redirection setting failed, please check carefully whether it is the same as the example"
     backupNginxConfig restoreBackup
 }
 
@@ -3438,12 +3450,12 @@ checkNginx302() {
 backupNginxConfig() {
     if [[ "$1" == "backup" ]]; then
         cp /etc/nginx/conf.d/alone.conf /etc/v2ray-agent/alone_backup.conf
-        echoContent green " ---> nginx configuration文件备份成功"
+        echoContent green " ---> The nginx configuration file was backed up successfully"
     fi
 
     if [[ "$1" == "restoreBackup" ]] && [[ -f "/etc/v2ray-agent/alone_backup.conf" ]]; then
         cp /etc/v2ray-agent/alone_backup.conf /etc/nginx/conf.d/alone.conf
-        echoContent green " ---> nginx configuration文件恢复备份成功"
+        echoContent green " ---> The nginx configuration file restores the backup successfully"
         rm /etc/v2ray-agent/alone_backup.conf
     fi
 
@@ -3741,10 +3753,10 @@ updateV2RayCDN() {
                 sed -i "s/\"${currentAdd}\"/\"${setDomain}\"/g" "$(grep "${currentAdd}" -rl ${configPath}${frontingType}.json)"
             fi
             if [[ $(jq -r .inbounds[0].settings.clients[0].add ${configPath}${frontingType}.json) == "${setDomain}" ]]; then
-                echoContent green " ---> CDN修改成功"
+                echoContent green " ---> CDN modified successfully"
                 reloadCore
             else
-                echoContent red " ---> 修改CDN失败"
+                echoContent red " ---> Failed to modify CDN"
             fi
         fi
     else
@@ -3771,7 +3783,7 @@ manageUser() {
 
 # 自定义uuid
 customUUID() {
-    #	read -r -p "是否自定义UUID ？[y/n]:" customUUIDStatus
+    #	read -r -p "Do you want to use custom UUID ？[y/n]:" customUUIDStatus
     #	echo
     #	if [[ "${customUUIDStatus}" == "y" ]]; then
     read -r -p "Please enter a valid UUID, [Enter] Random UUID:" currentCustomUUID
@@ -3788,7 +3800,7 @@ customUUID() {
             fi
         done
         if [[ -f "/tmp/v2ray-agent" && -n $(cat /tmp/v2ray-agent) ]]; then
-            echoContent red " ---> UUID不可重复"
+            echoContent red " ---> UUID cannot be repeated"
             rm /tmp/v2ray-agent
             exit 0
         fi
@@ -4532,7 +4544,7 @@ EOF
     fi
     reloadCore
 }
-# 流媒体工具箱
+# 流媒体Tools箱
 streamingToolbox() {
 	echoContent skyBlue "\nFunction 1/${totalProgress} : Streaming Toolbox"
 	echoContent red "\n=============================================================="
