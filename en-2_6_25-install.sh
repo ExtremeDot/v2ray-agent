@@ -5427,7 +5427,7 @@ manageHysteria() {
 		echoContent yellow "1.Reinstall"
 		echoContent yellow "2.Uninstall"
 		echoContent yellow "3.upgrade core"
-		echoContent yellow "4.View log""
+		echoContent yellow "4.View log"
         hysteriaStatus=true
     else
         echoContent yellow "1.安装"
