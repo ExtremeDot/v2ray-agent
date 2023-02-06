@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PATCH1-TEST 1
-ENVERSION=a1
+ENVERSION=a2
 # 检测区
 # -------------------------------------------------------------
 # 检查系统
@@ -112,7 +112,7 @@ initVar() {
     upgrade="yum -y update"
     echoType='echo -e'
 
-    # 核心支持的cpu Version 
+    # Core支持的cpu Version 
     xrayCoreCPUVendor=""
     v2rayCoreCPUVendor=""
     hysteriaCoreCPUVendor=""
@@ -131,7 +131,7 @@ initVar() {
     # 3.v2ray-core[xtls] Install 
     coreInstallType=
 
-    # 核心Install path
+    # CoreInstall path
     # coreInstallPath=
 
     # v2ctl Path
@@ -505,16 +505,16 @@ showInstallStatus() {
     if [[ -n "${coreInstallType}" ]]; then
         if [[ "${coreInstallType}" == 1 ]]; then
             if [[ -n $(pgrep -f xray/xray) ]]; then
-                echoContent yellow "\n核心: Xray-core[Running]"
+                echoContent yellow "\nCore: Xray-core[Running]"
             else
-                echoContent yellow "\n核心: Xray-core[Not Running]"
+                echoContent yellow "\nCore: Xray-core[Not Running]"
             fi
 
         elif [[ "${coreInstallType}" == 2 || "${coreInstallType}" == 3 ]]; then
             if [[ -n $(pgrep -f v2ray/v2ray) ]]; then
-                echoContent yellow "\n核心: v2ray-core[Running]"
+                echoContent yellow "\nCore: v2ray-core[Running]"
             else
-                echoContent yellow "\n核心: v2ray-core[Not Running]"
+                echoContent yellow "\nCore: v2ray-core[Not Running]"
             fi
         fi
         # 读取TYPE
@@ -4931,7 +4931,7 @@ removeVMessWSTLSUnblockStreamingMedia() {
     echoContent green " ---> 卸载成功"
 }
 
-# 重启核心
+# 重启Core
 reloadCore() {
     if [[ "${coreInstallType}" == "1" ]]; then
         handleXray stop
@@ -5303,7 +5303,7 @@ unInstallHysteriaCore() {
     echoContent green " ---> Uninstall complete"
 }
 
-# 核心管理
+# Core管理
 coreVersionManageMenu() {
 
     if [[ -z "${coreInstallType}" ]]; then
