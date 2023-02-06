@@ -3635,14 +3635,14 @@ EOF
 EOF
             done < <(echo "${newPort}" | tr ',' '\n')
 
-            echoContent green " ---> 添加成功"
+            echoContent green " ---> Added successfully"
             reloadCore
             addCorePort
         fi
     elif [[ "${selectNewPortType}" == "2" ]]; then
 
         find ${configPath} -name "*dokodemodoor*" | awk -F "[c][o][n][f][/]" '{print ""NR""":"$2}'
-        read -r -p "请输入要删除的PORT编号:" portIndex
+        read -r -p "Please enter the PORT number to delete:" portIndex
         local dokoConfig
         dokoConfig=$(find ${configPath} -name "*dokodemodoor*" | awk -F "[c][o][n][f][/]" '{print ""NR""":"$2}' | grep "${portIndex}:")
         if [[ -n "${dokoConfig}" ]]; then
@@ -3650,7 +3650,7 @@ EOF
             reloadCore
             addCorePort
         else
-            echoContent yellow "\n ---> 编号 Wrong Input，please select again"
+            echoContent yellow "\n ---> Wrong Input，please select again"
             addCorePort
         fi
     fi
@@ -4972,7 +4972,7 @@ dnsUnlockNetflix() {
 
 # 设置dns
 setUnlockDNS() {
-    read -r -p "请输入解锁流媒体DNS:" setDNS
+    read -r -p "Please enter unblock streaming DNS:" setDNS
     if [[ -n ${setDNS} ]]; then
 		echoContent red "=============================================================="
 		echoContent yellow "# Notes\n"
@@ -5065,7 +5065,7 @@ EOF
 
 # v2ray-core个性化Install 
 customV2RayInstall() {
-    echoContent skyBlue "\n========================Personalized installation============================"
+    echoContent skyBlue "\n========================Customized installation============================"
     echoContent yellow "VLESS is pre-installed, and 0 is installed by default.If only 0 needs to be installed, only 0 can be selected"
     echoContent yellow "0.VLESS+TLS/XTLS+TCP"
     echoContent yellow "1.VLESS+TLS+WS[CDN]"
@@ -5114,7 +5114,7 @@ customV2RayInstall() {
 
 # Xray-core个性化Install 
 customXrayInstall() {
-    echoContent skyBlue "\n========================Personalized installation============================"
+    echoContent skyBlue "\n========================Customized installation============================"
     echoContent yellow "Default Selection is 0"
     echoContent yellow "0.VLESS+TLS/XTLS+TCP"
     echoContent yellow "1.VLESS+TLS+WS[CDN]"
@@ -5337,7 +5337,7 @@ manageAccount() {
 	echoContent yellow "3.Add user"
 	echoContent yellow "4.Delete user"
     echoContent red "=============================================================="
-    read -r -p "请输入:" manageAccountStatus
+    read -r -p "Please Enter:" manageAccountStatus
     if [[ "${manageAccountStatus}" == "1" ]]; then
         showAccounts 1
     elif [[ "${manageAccountStatus}" == "2" ]]; then
@@ -5467,6 +5467,7 @@ menu() {
 	echoContent red "\n=======V2RAY AGENT============================================"
 	echoContent green "author:mack-a | Current version: v2.6.25-$ENVERSION"
 	echoContent green "Github: github.com/mack-a/v2ray-agent or Telegram: t.me/mackaff "
+	echoContent green "Github: github.com/ExtremeDot/v2ray-agent [Translate and Some changes] "
 	showInstallStatus
 	echoContent red "\n=======SUPPORT ME============================================="	
 	echoContent green "AFF donation: github.com/mack-a/v2ray-agent/blob/master/documents/donation_aff.md"
