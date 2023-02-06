@@ -5451,9 +5451,9 @@ manageHysteria() {
 menu() {
 	cd "$HOME" || exit
 	clear
-	echoContent red "\n=======V2RAY AGENT============================================"
-	echoContent green "author:mack-a \| Version: EN-v2.6.25"
-	echoContent green "Github: github.com/mack-a/v2ray-agent or Telegram: t.me/mackaff "
+	echoContent red "\n=======V2RAY AGENT Version: EN-v2.6.25 ====================="
+	echoContent green "Author:mack-a "
+	echoContent green "github.com/mack-a/v2ray-agent | Telegram: t.me/mackaff "
 	showInstallStatus
 	echoContent green "AFF donation: https://github.com/mack-a/v2ray-agent/blob/master/documents/donation_aff.md"
 	echoContent green "ERC20 donation: 0xB08b731653515b083deE362fefFc45d5eb96c35d"
