@@ -122,24 +122,24 @@ initVar() {
     # CDN节点的address
     add=
 
-    # 安装总进度
+    # Install总进度
     totalProgress=1
 
-    # 1.xray-core安装
-    # 2.v2ray-core 安装
-    # 3.v2ray-core[xtls] 安装
+    # 1.xray-coreInstall
+    # 2.v2ray-core Install
+    # 3.v2ray-core[xtls] Install
     coreInstallType=
 
-    # 核心安装path
+    # 核心Installpath
     # coreInstallPath=
 
     # v2ctl Path
     ctlPath=
-    # 1.全部安装
-    # 2.个性化安装
+    # 1.全部Install
+    # 2.个性化Install
     # v2rayAgentInstallType=
 
-    # 当前的个性化安装方式 01234
+    # 当前的个性化Install方式 01234
     currentInstallProtocolType=
 
     # 当前alpn的顺序
@@ -148,7 +148,7 @@ initVar() {
     # 前置类型
     frontingType=
 
-    # 选择的个性化安装方式
+    # 选择的个性化Install方式
     selectCustomInstallType=
 
     # v2ray-core、xray-core配置文件的PATH
@@ -163,7 +163,7 @@ initVar() {
     # 配置文件的host
     currentHost=
 
-    # 安装时选择的core类型
+    # Install时选择的core类型
     selectCoreType=
 
     # 默认core版本
@@ -186,7 +186,7 @@ initVar() {
     # 集成更新证书逻辑不再使用单独的脚本--RenewTLS
     renewTLS=$1
 
-    # tls安装失败后尝试的次数
+    # tlsInstall失败后尝试的次数
     installTLSCount=
 
     # BTPanel状态
@@ -213,7 +213,7 @@ initVar() {
     # dns tls domain
     dnsTLSDomain=
 
-    # 该域名是否通过dns安装通配符证书
+    # 该域名是否通过dnsInstall通配符证书
     installDNSACMEStatus=
 
     # 自定义PORT
@@ -255,15 +255,15 @@ readCustomPort() {
         fi
     fi
 }
-# 检测安装方式
+# 检测Install方式
 readInstallType() {
     coreInstallType=
     configPath=
     hysteriaConfigPath=
 
-    # 1.检测安装目录
+    # 1.检测Install目录
     if [[ -d "/etc/v2ray-agent" ]]; then
-        # 检测安装方式 v2ray-core
+        # 检测Install方式 v2ray-core
         if [[ -d "/etc/v2ray-agent/v2ray" && -f "/etc/v2ray-agent/v2ray/v2ray" && -f "/etc/v2ray-agent/v2ray/v2ctl" ]]; then
             if [[ -d "/etc/v2ray-agent/v2ray/conf" && -f "/etc/v2ray-agent/v2ray/conf/02_VLESS_TCP_inbounds.json" ]]; then
                 configPath=/etc/v2ray-agent/v2ray/conf/
@@ -329,7 +329,7 @@ readInstallProtocolType() {
     fi
 }
 
-# 检查是否安装宝塔
+# 检查是否Install宝塔
 checkBTPanel() {
     if pgrep -f "BT-Panel"; then
         nginxConfigPath=/www/server/panel/vhost/nginx/
@@ -389,13 +389,13 @@ allowPort() {
 # 检查80、443PORT占用情况
 checkPortUsedStatus() {
     if lsof -i tcp:80 | grep -q LISTEN; then
-        echoContent red "\n ---> 80PORT被占用，请手动关闭后安装\n"
+        echoContent red "\n ---> 80PORT被占用，请手动关闭后Install\n"
         lsof -i tcp:80 | grep LISTEN
         exit 0
     fi
 
     if lsof -i tcp:443 | grep -q LISTEN; then
-        echoContent red "\n ---> 443PORT被占用，请手动关闭后安装\n"
+        echoContent red "\n ---> 443PORT被占用，请手动关闭后Install\n"
         lsof -i tcp:80 | grep LISTEN
         exit 0
     fi
@@ -520,7 +520,7 @@ showInstallStatus() {
         readInstallProtocolType
 
         if [[ -n ${currentInstallProtocolType} ]]; then
-            echoContent yellow "已安装协议: \c"
+            echoContent yellow "已Install协议: \c"
         fi
         if echo ${currentInstallProtocolType} | grep -q 0; then
             if [[ "${coreInstallType}" == 2 ]]; then
@@ -588,7 +588,7 @@ readCustomPort
 checkBTPanel
 # -------------------------------------------------------------
 
-# 初始化安装目录
+# 初始化Install目录
 mkdirTools() {
     mkdir -p /etc/v2ray-agent/tls
     mkdir -p /etc/v2ray-agent/subscribe
@@ -603,9 +603,9 @@ mkdirTools() {
     mkdir -p /tmp/v2ray-agent-tls/
 }
 
-# 安装工具包
+# Install工具包
 installTools() {
-    echoContent skyBlue "\n进度  $1/${totalProgress} : 安装工具"
+    echoContent skyBlue "\n进度  $1/${totalProgress} : Install工具"
     # 修复ubuntu个别系统问题
     if [[ "${release}" == "ubuntu" ]]; then
         dpkg --configure -a
@@ -630,32 +630,32 @@ installTools() {
     #	[[ -z `find /usr/bin /usr/sbin |grep -v grep|grep -w curl` ]]
 
     if ! find /usr/bin /usr/sbin | grep -q -w wget; then
-        echoContent green " ---> 安装wget"
+        echoContent green " ---> Installwget"
         ${installType} wget >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w curl; then
-        echoContent green " ---> 安装curl"
+        echoContent green " ---> Installcurl"
         ${installType} curl >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w unzip; then
-        echoContent green " ---> 安装unzip"
+        echoContent green " ---> Installunzip"
         ${installType} unzip >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w socat; then
-        echoContent green " ---> 安装socat"
+        echoContent green " ---> Installsocat"
         ${installType} socat >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w tar; then
-        echoContent green " ---> 安装tar"
+        echoContent green " ---> Installtar"
         ${installType} tar >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w cron; then
-        echoContent green " ---> 安装crontabs"
+        echoContent green " ---> Installcrontabs"
         if [[ "${release}" == "ubuntu" ]] || [[ "${release}" == "debian" ]]; then
             ${installType} cron >/dev/null 2>&1
         else
@@ -663,42 +663,42 @@ installTools() {
         fi
     fi
     if ! find /usr/bin /usr/sbin | grep -q -w jq; then
-        echoContent green " ---> 安装jq"
+        echoContent green " ---> Installjq"
         ${installType} jq >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w binutils; then
-        echoContent green " ---> 安装binutils"
+        echoContent green " ---> Installbinutils"
         ${installType} binutils >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w ping6; then
-        echoContent green " ---> 安装ping6"
+        echoContent green " ---> Installping6"
         ${installType} inetutils-ping >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w qrencode; then
-        echoContent green " ---> 安装qrencode"
+        echoContent green " ---> Installqrencode"
         ${installType} qrencode >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w sudo; then
-        echoContent green " ---> 安装sudo"
+        echoContent green " ---> Installsudo"
         ${installType} sudo >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w lsb-release; then
-        echoContent green " ---> 安装lsb-release"
+        echoContent green " ---> Installlsb-release"
         ${installType} lsb-release >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w lsof; then
-        echoContent green " ---> 安装lsof"
+        echoContent green " ---> Installlsof"
         ${installType} lsof >/dev/null 2>&1
     fi
 
     if ! find /usr/bin /usr/sbin | grep -q -w dig; then
-        echoContent green " ---> 安装dig"
+        echoContent green " ---> Installdig"
         if echo "${installType}" | grep -q -w "apt"; then
             ${installType} dnsutils >/dev/null 2>&1
         elif echo "${installType}" | grep -q -w "yum"; then
@@ -709,7 +709,7 @@ installTools() {
     # 检测nginx版本，并提供是否卸载的选项
 
     if ! find /usr/bin /usr/sbin | grep -q -w nginx; then
-        echoContent green " ---> 安装nginx"
+        echoContent green " ---> Installnginx"
         installNginxTools
     else
         nginxVersion=$(nginx -v 2>&1)
@@ -719,7 +719,7 @@ installTools() {
             if [[ "${unInstallNginxStatus}" == "y" ]]; then
                 ${removeType} nginx >/dev/null 2>&1
                 echoContent yellow " ---> nginx卸载完成"
-                echoContent green " ---> 安装nginx"
+                echoContent green " ---> Installnginx"
                 installNginxTools >/dev/null 2>&1
             else
                 exit 0
@@ -727,7 +727,7 @@ installTools() {
         fi
     fi
     if ! find /usr/bin /usr/sbin | grep -q -w semanage; then
-        echoContent green " ---> 安装semanage"
+        echoContent green " ---> Installsemanage"
         ${installType} bash-completion >/dev/null 2>&1
 
         if [[ "${centosVersion}" == "7" ]]; then
@@ -746,7 +746,7 @@ installTools() {
     fi
 
     if [[ ! -d "$HOME/.acme.sh" ]] || [[ -d "$HOME/.acme.sh" && -z $(find "$HOME/.acme.sh/acme.sh") ]]; then
-        echoContent green " ---> 安装acme.sh"
+        echoContent green " ---> Installacme.sh"
         curl -s https://get.acme.sh | sh >/etc/v2ray-agent/tls/acme.log 2>&1
 
         if [[ ! -d "$HOME/.acme.sh" ]] || [[ -z $(find "$HOME/.acme.sh/acme.sh") ]]; then
@@ -762,7 +762,7 @@ installTools() {
     fi
 }
 
-# 安装Nginx
+# InstallNginx
 installNginxTools() {
 
     if [[ "${release}" == "debian" ]]; then
@@ -809,7 +809,7 @@ EOF
     systemctl enable nginx
 }
 
-# 安装warp
+# Installwarp
 installWarp() {
     ${installType} gnupg2 -y >/dev/null 2>&1
     if [[ "${release}" == "debian" ]]; then
@@ -827,10 +827,10 @@ installWarp() {
         sudo rpm -ivh "http://pkg.cloudflareclient.com/cloudflare-release-el${centosVersion}.rpm" >/dev/null 2>&1
     fi
 
-    echoContent green " ---> 安装WARP"
+    echoContent green " ---> InstallWARP"
     ${installType} cloudflare-warp >/dev/null 2>&1
     if [[ -z $(which warp-cli) ]]; then
-        echoContent red " ---> 安装WARP失败"
+        echoContent red " ---> InstallWARP失败"
         exit 0
     fi
     systemctl enable warp-svc
@@ -1151,7 +1151,7 @@ customSSLEmail() {
     fi
 
 }
-# 选择ssl安装类型
+# 选择sslInstall类型
 switchSSLType() {
     if [[ -z "${sslType}" ]]; then
 		echoContent red "\n=============================================================="
@@ -1179,7 +1179,7 @@ switchSSLType() {
     fi
 }
 
-# 选择acme安装证书方式
+# 选择acmeInstall证书方式
 selectAcmeInstallSSL() {
     local installSSLIPv6=
     if echo "${localIP}" | grep -q ":"; then
@@ -1210,7 +1210,7 @@ selectAcmeInstallSSL() {
     readAcmeTLS
 }
 
-# 安装SSL证书
+# InstallSSL证书
 acmeInstallSSL() {
     if [[ "${dnsSSLStatus}" == "true" ]]; then
 
@@ -1296,12 +1296,12 @@ checkCustomPort() {
     fi
 }
 
-# 安装TLS
+# InstallTLS
 installTLS() {
     echoContent skyBlue "\n进度  $1/${totalProgress} : 申请TLS证书\n"
     local tlsDomain=${domain}
 
-    # 安装tls
+    # Installtls
     if [[ -f "/etc/v2ray-agent/tls/${tlsDomain}.crt" && -f "/etc/v2ray-agent/tls/${tlsDomain}.key" && -n $(cat "/etc/v2ray-agent/tls/${tlsDomain}.crt") ]] || [[ -d "$HOME/.acme.sh/${tlsDomain}_ecc" && -f "$HOME/.acme.sh/${tlsDomain}_ecc/${tlsDomain}.key" && -f "$HOME/.acme.sh/${tlsDomain}_ecc/${tlsDomain}.cer" ]]; then
         echoContent green " ---> 检测到证书"
         # checkTLStatus
@@ -1311,7 +1311,7 @@ installTLS() {
             sudo "$HOME/.acme.sh/acme.sh" --installcert -d "${tlsDomain}" --fullchainpath "/etc/v2ray-agent/tls/${tlsDomain}.crt" --keypath "/etc/v2ray-agent/tls/${tlsDomain}.key" --ecc >/dev/null
         else
             echoContent yellow " ---> 如未过期或者自定义证书Please Select[n]\n"
-            read -r -p "是否重新安装？[y/n]:" reInstallStatus
+            read -r -p "是否重新Install？[y/n]:" reInstallStatus
             if [[ "${reInstallStatus}" == "y" ]]; then
                 rm -rf /etc/v2ray-agent/tls/*
                 installTLS "$1"
@@ -1341,7 +1341,7 @@ installTLS() {
         if [[ ! -f "/etc/v2ray-agent/tls/${tlsDomain}.crt" || ! -f "/etc/v2ray-agent/tls/${tlsDomain}.key" ]] || [[ -z $(cat "/etc/v2ray-agent/tls/${tlsDomain}.key") || -z $(cat "/etc/v2ray-agent/tls/${tlsDomain}.crt") ]]; then
             tail -n 10 /etc/v2ray-agent/tls/acme.log
             if [[ ${installTLSCount} == "1" ]]; then
-                echoContent red " ---> TLS安装失败，请检查acme日志"
+                echoContent red " ---> TLSInstall失败，请检查acme日志"
                 exit 0
             fi
 
@@ -1353,7 +1353,7 @@ installTLS() {
                 allowPort 443
             fi
 
-            echoContent yellow " ---> 重新尝试安装TLS证书"
+            echoContent yellow " ---> 重新尝试InstallTLS证书"
 
             if tail -n 10 /etc/v2ray-agent/tls/acme.log | grep -q "Could not validate email address as valid"; then
                 echoContent red " ---> The mailbox cannot be verified by the SSL manufacturer, please re-enter"
@@ -1368,7 +1368,7 @@ installTLS() {
 
         echoContent green " ---> TLS生成成功"
     else
-        echoContent yellow " ---> 未安装acme.sh"
+        echoContent yellow " ---> 未Installacme.sh"
         exit 0
     fi
 }
@@ -1562,7 +1562,7 @@ renewalTLS() {
             echoContent green " ---> 证书有效"
         fi
     else
-        echoContent red " ---> 未安装"
+        echoContent red " ---> 未Install"
     fi
 }
 # 查看TLS证书的状态
@@ -1588,10 +1588,10 @@ checkTLStatus() {
     fi
 }
 
-# 安装V2Ray、指定版本
+# InstallV2Ray、指定版本
 installV2Ray() {
     readInstallType
-    echoContent skyBlue "\n进度  $1/${totalProgress} : 安装V2Ray"
+    echoContent skyBlue "\n进度  $1/${totalProgress} : InstallV2Ray"
 
     if [[ "${coreInstallType}" != "2" && "${coreInstallType}" != "3" ]]; then
         if [[ "${selectCoreType}" == "2" ]]; then
@@ -1628,10 +1628,10 @@ installV2Ray() {
     fi
 }
 
-# 安装 hysteria
+# Install hysteria
 installHysteria() {
     readInstallType
-    echoContent skyBlue "\n进度  $1/${totalProgress} : 安装Hysteria"
+    echoContent skyBlue "\n进度  $1/${totalProgress} : InstallHysteria"
 
     if [[ -z "${hysteriaConfigPath}" ]]; then
 
@@ -1655,7 +1655,7 @@ installHysteria() {
     fi
 
 }
-# 安装xray
+# Installxray
 installXray() {
     readInstallType
     echoContent skyBlue "\nProgress $1/${totalProgress} : Install Xray"
@@ -1924,7 +1924,7 @@ updateXray() {
                 rm -f /etc/v2ray-agent/xray/xray
                 updateXray
             else
-                echoContent green " ---> 放弃重新安装"
+                echoContent green " ---> 放弃重新Install"
             fi
         else
             read -r -p "The latest version is: ${version}, update? [y/n]:" installXrayStatus
@@ -1988,7 +1988,7 @@ EOF
     fi
 }
 
-# 安装hysteria开机自启
+# Installhysteria开机自启
 installHysteriaService() {
     echoContent skyBlue "\n进度  $1/${totalProgress} : 配置Hysteria开机自启"
     if [[ -n $(find /bin /usr/bin -name "systemctl") ]]; then
@@ -2658,7 +2658,7 @@ initXrayFrontingConfig() {
         exit 0
     fi
     if [[ "${coreInstallType}" != "1" ]]; then
-        echoContent red " ---> 未安装可用类型"
+        echoContent red " ---> 未Install可用类型"
     fi
     local xtlsType=
     if echo ${currentInstallProtocolType} | grep -q trojan; then
@@ -2727,7 +2727,7 @@ initXrayConfig() {
     local uuid=
     local addClientsStatus=
     if [[ -n "${currentUUID}" ]]; then
-        read -r -p "读取到上次安装记录，是否使用上次安装时的UUID ？[y/n]:" historyUUIDStatus
+        read -r -p "读取到上次Install记录，是否使用上次Install时的UUID ？[y/n]:" historyUUIDStatus
         if [[ "${historyUUIDStatus}" == "y" ]]; then
             addClientsStatus=true
             uuid=${currentUUID}
@@ -3399,7 +3399,7 @@ showAccounts() {
     fi
 
     if [[ -z ${show} ]]; then
-        echoContent red " ---> 未安装"
+        echoContent red " ---> 未Install"
     fi
 }
 # 移除nginx302配置
@@ -3747,7 +3747,7 @@ updateV2RayCDN() {
             fi
         fi
     else
-        echoContent red " ---> 未安装可用类型"
+        echoContent red " ---> 未Install可用类型"
     fi
 }
 
@@ -4032,7 +4032,7 @@ handleFirewall() {
     fi
 }
 
-# 安装BBR
+# InstallBBR
 bbrInstall() {
 	echoContent red "\n=============================================================="
 	echoContent green "The mature works of [ylx2016] for BBR and DD scripts, the address is [https://github.com/ylx2016/Linux-NetSpeed], please be familiar with"
@@ -4435,7 +4435,7 @@ unInstallSniffing() {
     done
 }
 
-# 安装嗅探
+# Install嗅探
 installSniffing() {
 
     find ${configPath} -name "*inbounds.json*" | awk -F "[c][o][n][f][/]" '{print $2}' | while read -r inbound; do
@@ -5050,7 +5050,7 @@ EOF
     exit 0
 }
 
-# v2ray-core个性化安装
+# v2ray-core个性化Install
 customV2RayInstall() {
     echoContent skyBlue "\n========================Personalized installation============================"
     echoContent yellow "VLESS is pre-installed, and 0 is installed by default.If only 0 needs to be installed, only 0 can be selected"
@@ -5082,7 +5082,7 @@ customV2RayInstall() {
         updateRedirectNginxConf
         handleNginx start
 
-        # 安装V2Ray
+        # InstallV2Ray
         installV2Ray 8
         installV2RayService 9
         initV2RayConfig custom 10
@@ -5099,7 +5099,7 @@ customV2RayInstall() {
     fi
 }
 
-# Xray-core个性化安装
+# Xray-core个性化Install
 customXrayInstall() {
     echoContent skyBlue "\n========================Personalized installation============================"
     echoContent yellow "Default Selection is 0"
@@ -5135,7 +5135,7 @@ customXrayInstall() {
         updateRedirectNginxConf
         handleNginx start
 
-        # 安装V2Ray
+        # InstallV2Ray
         installXray 8
         installXrayService 9
         initXrayConfig custom 10
@@ -5192,7 +5192,7 @@ selectCoreInstall() {
     esac
 }
 
-# v2ray-core 安装
+# v2ray-core Install
 v2rayCoreInstall() {
     cleanUp xrayClean
     selectCustomInstallType=
@@ -5209,7 +5209,7 @@ v2rayCoreInstall() {
     handleNginx stop
     #	initNginxConfig 5
     randomPathFunction 5
-    # 安装V2Ray
+    # InstallV2Ray
     installV2Ray 6
     installV2RayService 7
     customCDNIP 8
@@ -5227,7 +5227,7 @@ v2rayCoreInstall() {
     showAccounts 13
 }
 
-# xray-core 安装
+# xray-core Install
 xrayCoreInstall() {
     cleanUp v2rayClean
     selectCustomInstallType=
@@ -5243,7 +5243,7 @@ xrayCoreInstall() {
     installTLS 4
     handleNginx stop
     randomPathFunction 5
-    # 安装Xray
+    # InstallXray
     # handleV2Ray stop
     installXray 6
     installXrayService 7
@@ -5262,7 +5262,7 @@ xrayCoreInstall() {
     checkGFWStatue 12
     showAccounts 13
 }
-# Hysteria安装
+# HysteriaInstall
 hysteriaCoreInstall() {
     if [[ -z "${coreInstallType}" ]]; then
         echoContent red "\n ---> Due to environmental dependencies, if installing hysteria, please install Xray/V2ray first"
@@ -5371,7 +5371,7 @@ subscribe() {
             done
         fi
     else
-        echoContent red " ---> 未安装"
+        echoContent red " ---> 未Install"
     fi
 }
 
@@ -5379,7 +5379,7 @@ subscribe() {
 switchAlpn() {
     echoContent skyBlue "\nFunction 1/${totalProgress} : 切换alpn"
     if [[ -z ${currentAlpn} ]]; then
-        echoContent red " ---> 无法读取alpn，请检查是否安装"
+        echoContent red " ---> 无法读取alpn，请检查是否Install"
         exit 0
     fi
 
@@ -5431,7 +5431,7 @@ manageHysteria() {
 		echoContent yellow "4.View log"
         hysteriaStatus=true
     else
-        echoContent yellow "1.安装"
+        echoContent yellow "1.Install"
     fi
 
     echoContent red "=============================================================="
