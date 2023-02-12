@@ -3264,6 +3264,19 @@ EOF
         echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${hysteriaEmail}\n"
     fi
 
+echoContent yellow " ALL CONFIGS"
+echo
+
+echoContent green "    vmess://${qrCodeBase64Default}\n"
+echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
+echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email}\n"
+echoContent green "    vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=ws&host=${currentHost}&sni=${currentHost}&path=/${currentPath}ws#${email}\n"
+echoContent green "    vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=grpc&host=${currentHost}&path=${currentPath}grpc&serviceName=${currentPath}grpc&alpn=h2&sni=${currentHost}#${email}\n"
+echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${currentHost}_Trojan\n"
+echoContent green "    trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email}\n"
+echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
+echoContent green "    hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${hysteriaEmail}\n"
+
 }
 
 # account
@@ -3728,12 +3741,12 @@ unInstall() {
 updateV2RayCDN() {
 
     # todo 重构此方法
-    echoContent skyBlue "\nProgress  $1/${totalProgress} : 修改CDN节点"
+    echoContent skyBlue "\nProgress $1/${totalProgress} : modify CDN node"
 
     if [[ -n "${currentAdd}" ]]; then
 		echoContent red "=============================================================="
 		echoContent yellow "1.CNAME www.digitalocean.com"
-		echoContent yellow "2.CNAME www.cloudflare.com"
+		echoContent yellow "2.CNAME who.int"
 		echoContent yellow "3.CNAME hostmonit.com"
 		echoContent yellow "4.Manual input"
 		echoContent yellow "5.Remove CDN Host"
@@ -4079,9 +4092,9 @@ checkLog() {
         logStatus=true
     fi
 
-    echoContent skyBlue "\nFunction $1/${totalProgress} : 查看日志"
+    echoContent skyBlue "\nFunction $1/${totalProgress} : View log"
     echoContent red "\n=============================================================="
-    echoContent yellow "# 建议仅调试时打开access日志\n"
+    echoContent yellow "# It is recommended to open the access log only when debugging\n"
 
     if [[ "${logStatus}" == "false" ]]; then
         echoContent yellow "1.Open access log"
