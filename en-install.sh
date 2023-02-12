@@ -3278,23 +3278,23 @@ showAccounts() {
     if [[ -n "${configPath}" ]]; then
         show=1
         if echo "${currentInstallProtocolType}" | grep -q trojan; then
-            echoContent skyBlue "===================== Trojan TCP TLS/XTLS-vision ======================\n"
+            echoContent skyBlue "\n===================== Trojan TCP TLS/XTLS-vision ======================"
             jq .inbounds[0].settings.clients ${configPath}02_trojan_TCP_inbounds.json | jq -c '.[]' | while read -r user; do
                 local email=
                 email=$(echo "${user}" | jq -r .email)
-                echoContent skyBlue "\n ---> account:${email}"
+                echoContent skyBlue " ---> account:${email}"
                 defaultBase64Code trojanTCPXTLS "${email}" "$(echo "${user}" | jq -r .password)"
             done
 
         else
-            echoContent skyBlue "===================== VLESS TCP TLS/XTLS-vision ======================\n"
-            echoContent red "\n --->If the client does not support vision, it will use the default VLESS TCP TLS. Vision can effectively avoid port blocking."
-			echoContent red " ---> Non-vision does not have this function. Please confirm before using it. "
+            echoContent skyBlue "\n===================== VLESS TCP TLS/XTLS-vision ======================"
+            echoContent red " --->If the client does not support vision, it will use the default VLESS TCP TLS. Vision can effectively avoid port blocking."
+		echoContent red " ---> Non-vision does not have this function. Please confirm before using it. "
             jq .inbounds[0].settings.clients ${configPath}02_VLESS_TCP_inbounds.json | jq -c '.[]' | while read -r user; do
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> account:${email}"
+                echoContent skyBlue " ---> account:${email}"
                 echo
                 defaultBase64Code vlesstcp "${email}" "$(echo "${user}" | jq -r .id)"
             done
@@ -3302,7 +3302,7 @@ showAccounts() {
 
         # VLESS WS
         if echo ${currentInstallProtocolType} | grep -q 1; then
-            echoContent skyBlue "\n================================ VLESS WS TLS CDN ================================\n"
+            echoContent skyBlue "\n================================ VLESS WS TLS CDN ================================"
 
             jq .inbounds[0].settings.clients ${configPath}03_VLESS_WS_inbounds.json | jq -c '.[]' | while read -r user; do
                 local email=
@@ -3312,8 +3312,8 @@ showAccounts() {
                 echo
                 local path="${currentPath}ws"
                 #	if [[ ${coreInstallType} == "1" ]]; then
-                #		echoContent yellow "There will be after the 0-RTT path of Xray, it is not compatible with the client with v2ray as the core, please delete it manually and use it\n"
-                #		path="${currentPath}ws"
+                #	echoContent yellow "There will be after the 0-RTT path of Xray, it is not compatible with the client with v2ray as the core, please delete it manually and use it"
+                #	path="${currentPath}ws"
                 #	fi
                 defaultBase64Code vlessws "${email}" "$(echo "${user}" | jq -r .id)"
             done
@@ -3321,7 +3321,7 @@ showAccounts() {
 
         # VMess WS
         if echo ${currentInstallProtocolType} | grep -q 3; then
-            echoContent skyBlue "\n================================ VMess WS TLS CDN ================================\n"
+            echoContent skyBlue "\n================================ VMess WS TLS CDN ================================"
             local path="${currentPath}vws"
             if [[ ${coreInstallType} == "1" ]]; then
                 path="${currentPath}vws"
@@ -3330,16 +3330,15 @@ showAccounts() {
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> account:${email}"
-                echo
+                echoContent skyBlue " ---> account:${email}"
                 defaultBase64Code vmessws "${email}" "$(echo "${user}" | jq -r .id)"
             done
         fi
 
         # VLESS grpc
         if echo ${currentInstallProtocolType} | grep -q 5; then
-            echoContent skyBlue "\n=============================== VLESS gRPC TLS CDN ===============================\n"
-			echoContent red "\n ---> gRPC is in the testing stage and may not be compatible with the client you are using.If it cannot be used, please ignore it"
+            echoContent skyBlue "\n=============================== VLESS gRPC TLS CDN ==============================="
+		echoContent red " ---> gRPC is in the testing stage and may not be compatible with the client you are using.If it cannot be used, please ignore it"
             #			local serviceName
             #			serviceName=$(jq -r .inbounds[0].streamSettings.grpcSettings.serviceName ${configPath}06_VLESS_gRPC_inbounds.json)
             jq .inbounds[0].settings.clients ${configPath}06_VLESS_gRPC_inbounds.json | jq -c '.[]' | while read -r user; do
@@ -3347,7 +3346,7 @@ showAccounts() {
                 local email=
                 email=$(echo "${user}" | jq -r .email)
 
-                echoContent skyBlue "\n ---> account:${email}"
+                echoContent skyBlue " ---> account:${email}"
                 echo
                 defaultBase64Code vlessgrpc "${email}" "$(echo "${user}" | jq -r .id)"
             done
@@ -3356,31 +3355,31 @@ showAccounts() {
 
     # trojan tcp
     if echo ${currentInstallProtocolType} | grep -q 4; then
-        echoContent skyBlue "\n==================================  Trojan TLS  ==================================\n"
+        echoContent skyBlue "\n==================================  Trojan TLS  =================================="
         jq .inbounds[0].settings.clients ${configPath}04_trojan_TCP_inbounds.json | jq -c '.[]' | while read -r user; do
             local email=
             email=$(echo "${user}" | jq -r .email)
-            echoContent skyBlue "\n ---> account:${email}"
+            echoContent skyBlue " ---> account:${email}"
 
             defaultBase64Code trojan "${email}" "$(echo "${user}" | jq -r .password)"
         done
     fi
 
     if echo ${currentInstallProtocolType} | grep -q 2; then
-		echoContent skyBlue "\n================================  Trojan gRPC TLS  ================================\n"
-		echoContent red "\n ---> gRPC is in the testing stage and may not be compatible with the client you are using.If it cannot be used, please ignore it"
+		echoContent skyBlue "\n================================  Trojan gRPC TLS  ================================"
+		echoContent red " ---> gRPC is in the testing stage and may not be compatible with the client you are using.If it cannot be used, please ignore it"
         jq .inbounds[0].settings.clients ${configPath}04_trojan_gRPC_inbounds.json | jq -c '.[]' | while read -r user; do
             local email=
             email=$(echo "${user}" | jq -r .email)
 
-            echoContent skyBlue "\n ---> account:${email}"
+            echoContent skyBlue " ---> account:${email}"
             echo
             defaultBase64Code trojangrpc "${email}" "$(echo "${user}" | jq -r .password)"
         done
     fi
     if echo ${currentInstallProtocolType} | grep -q 6; then
-		echoContent skyBlue "\n================================  Hysteria TLS  ================================\n"
-		echoContent red "\n ---> The speed of Hysteria depends on the local network environment.If it is used by QoS, the experience will be very poor.IDC may also consider it an attack, please use it with caution"
+		echoContent skyBlue "\n================================  Hysteria TLS  ================================"
+		echoContent red " ---> The speed of Hysteria depends on the local network environment.If it is used by QoS, the experience will be very poor.IDC may also consider it an attack, please use it with caution"
 
 
         jq .auth.config ${hysteriaConfigPath}config.json | jq -r '.[]' | while read -r user; do
@@ -3399,7 +3398,7 @@ showAccounts() {
 		hysteriaEmail=$(echo "${email}" | awk -F "[_]" '{print $1}')_hysteria
 
             if [[ -n ${defaultUser} ]]; then
-                echoContent skyBlue "\n ---> account:${hysteriaEmail}"
+                echoContent skyBlue " ---> account:${hysteriaEmail}"
                 echo
                 defaultBase64Code hysteria "${hysteriaEmail}" "${user}"
             fi
@@ -3409,7 +3408,7 @@ showAccounts() {
     fi
 
     if [[ -z ${show} ]]; then
-        echoContent red " ---> 未Install "
+        echoContent red " ---> Not Installed "
     fi
 }
 # 移除nginx302 configuration
