@@ -351,7 +351,7 @@ readInstallAlpn() {
 # 检查防火墙
 allowPort() {
     local type=$2
-    if [[ -z ${type} ]]; then
+    if [[ -z "${type}" ]]; then
         type=tcp
     fi
     # 如果防火墙启动状态则添加相应的开放PORT
@@ -367,7 +367,7 @@ allowPort() {
         fi
     elif systemctl status ufw 2>/dev/null | grep -q "active (exited)"; then
         if ufw status | grep -q "Status: active"; then
-            if ! ufw status | grep -q "$1"; then
+           if ! ufw status | grep -q "$1/${type}"; then
                 sudo ufw allow "$1/${type}"
                 checkUFWAllowPort "$1"
             fi
@@ -2215,7 +2215,7 @@ initHysteriaPort() {
         echoContent red " ---> Invalid Port"
         initHysteriaPort "$2"
     fi
-    allowPort "${hysteriaPort}"
+     allowPort "${hysteriaPort}" "udp"
 }
 
 # initializationhysteria的协议
@@ -2285,6 +2285,8 @@ initHysteriaConfig() {
     initHysteriaProtocol
     initHysteriaNetwork
 
+    local uuid=
+    uuid=$(${ctlPath} uuid)
     getClients "${configPath}${frontingType}.json" true
     cat <<EOF >/etc/v2ray-agent/hysteria/conf/config.json
 {
@@ -2297,6 +2299,11 @@ initHysteriaConfig() {
 		"mode": "passwords",
 		"config": []
 	},
+		"socks5_outbound":{
+	    "server":"127.0.0.1:31295",
+	    "user":"hysteria_socks5_outbound",
+	    "password":"${uuid}"
+	},	
 	"alpn": "h3",
 	"recv_window_conn": 15728640,
 	"recv_window_client": 67108864,
@@ -2308,6 +2315,30 @@ initHysteriaConfig() {
 EOF
 
     addClientsHysteria "/etc/v2ray-agent/hysteria/conf/config.json" true
+    # 添加socks入站
+    cat <<EOF >${configPath}/02_socks_inbounds_hysteria.json
+{
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 31295,
+      "protocol": "Socks",
+      "tag": "socksHysteriaOutbound",
+      "settings": {
+        "auth": "password",
+        "accounts": [
+          {
+            "user": "hysteria_socks5_outbound",
+            "pass": "${uuid}"
+          }
+        ],
+        "udp": true,
+        "ip": "127.0.0.1"
+      }
+    }
+  ]
+}
+EOF   
 }
 
 # initializationV2Ray  configuration文件
@@ -3259,14 +3290,16 @@ EOF
 		echo "trojan%3a%2f%2f${id}%40${currentAdd}%3a${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26peer%3d${currentHost}%26type%3Dgrpc%26sni%3d${currentHost}%26path%3D${currentPath}trojangrpc%26alpn%3Dh2%26serviceName%3D${currentPath}trojangrpc%23${email} " | qrencode -s 10 -m 1 -t UTF8
 
     elif [[ "${type}" == "hysteria" ]]; then
+    	local hysteriaEmail=
+        hysteriaEmail=$(echo "${email}" | awk -F "[_]" '{print $1}')_hysteria
         echoContent yellow " ---> Hysteria(TLS)"
-		echo "hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email} " | qrencode -s 10 -m 1 -t UTF8        echoContent green "    hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email}\n"
+	echoContent green "    hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${hysteriaEmail}\n"
         cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
-hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${email}
+hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${hysteriaEmail}
 EOF
         echoContent yellow " ---> QR code Hysteria(TLS)"
-		echo "hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${email} " | qrencode -s 10 -m 1 -t UTF8
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${email}\n"
+	echo "hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${hysteriaEmail} " | qrencode -s 10 -m 1 -t UTF8
+        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${hysteriaEmail}\n"
     fi
 
 }
@@ -3398,13 +3431,15 @@ showAccounts() {
             fi
 
             defaultUser=$(jq '.inbounds[0].settings.clients[]|select('${uuidType}'=="'"${user}"'")' ${configPath}${frontingType}.json)
-            local email=
-            email=$(echo "${defaultUser}" | jq -r .email)
+		local email=
+		email=$(echo "${defaultUser}" | jq -r .email)
+		local hysteriaEmail=
+		hysteriaEmail=$(echo "${email}" | awk -F "[_]" '{print $1}')_hysteria
 
             if [[ -n ${defaultUser} ]]; then
-                echoContent skyBlue "\n ---> account:${email}"
+                echoContent skyBlue "\n ---> account:${hysteriaEmail}"
                 echo
-                defaultBase64Code hysteria "${email}" "${user}"
+                defaultBase64Code hysteria "${hysteriaEmail}" "${user}"
             fi
 
         done
@@ -3557,13 +3592,17 @@ addCorePort() {
 	echoContent yellow "Special characters are not allowed, pay attention to the comma format"
 	echoContent yellow "Entry example: 2053,2083,2087\n"
 
-	echoContent yellow "1.Add port"
-	echoContent yellow "2.Delete port"
+	echoContent yellow "1. View the added port"
+	echoContent yellow "2. Add port"
+	echoContent yellow "3. Delete port"
 	echoContent red "=============================================================="
     read -r -p "Please Select:" selectNewPortType
     if [[ "${selectNewPortType}" == "1" ]]; then
+	find ${configPath} -name "*dokodemodoor*" | grep -v "hysteria" | awk -F "[c][o][n][f][/]" '{print $2}' | awk -F "[_]" '{print $4}' | awk -F "[.]" '{print ""NR""":"$1}'
+        exit 0
+    elif [[ "${selectNewPortType}" == "2" ]]; then
 	read -r -p "Please enter the port number:" newPort
-		read -r -p "Please enter the default port number, the subscription port and node port will be changed at the same time, [Enter] default 443:" defaultPort
+	read -r -p "Please enter the default port number, the subscription port and node port will be changed at the same time, [Enter] default 443:" defaultPort
 
         if [[ -n "${defaultPort}" ]]; then
             rm -rf "$(find ${configPath}* | grep "default")"
@@ -3639,14 +3678,19 @@ EOF
             reloadCore
             addCorePort
         fi
-    elif [[ "${selectNewPortType}" == "2" ]]; then
-
-        find ${configPath} -name "*dokodemodoor*" | awk -F "[c][o][n][f][/]" '{print ""NR""":"$2}'
+    elif [[ "${selectNewPortType}" == "3" ]]; then
+        find ${configPath} -name "*dokodemodoor*" | grep -v "hysteria" | awk -F "[c][o][n][f][/]" '{print $2}' | awk -F "[_]" '{print $4}' | awk -F "[.]" '{print ""NR""":"$1}'
         read -r -p "Please enter the PORT number to delete:" portIndex
         local dokoConfig
-        dokoConfig=$(find ${configPath} -name "*dokodemodoor*" | awk -F "[c][o][n][f][/]" '{print ""NR""":"$2}' | grep "${portIndex}:")
+        dokoConfig=$(find ${configPath} -name "*dokodemodoor*" | grep -v "hysteria" | awk -F "[c][o][n][f][/]" '{print $2}' | awk -F "[_]" '{print $4}' | awk -F "[.]" '{print ""NR""":"$1}' | grep "${portIndex}:")
         if [[ -n "${dokoConfig}" ]]; then
-            rm "${configPath}/$(echo "${dokoConfig}" | awk -F "[:]" '{print $2}')"
+            rm "${configPath}02_dokodemodoor_inbounds_$(echo "${dokoConfig}" | awk -F "[:]" '{print $2}').json"
+            local hysteriaDokodemodoorFilePath=
+
+            hysteriaDokodemodoorFilePath="${configPath}02_dokodemodoor_inbounds_hysteria_$(echo "${dokoConfig}" | awk -F "[:]" '{print $2}').json"
+            if [[ -f "${hysteriaDokodemodoorFilePath}" ]]; then
+                rm "${hysteriaDokodemodoorFilePath}"
+            fi
             reloadCore
             addCorePort
         else
@@ -3731,6 +3775,7 @@ updateV2RayCDN() {
 		echoContent yellow "2.CNAME www.cloudflare.com"
 		echoContent yellow "3.CNAME hostmonit.com"
 		echoContent yellow "4.Manual input"
+		echoContent yellow "5.Remove CDN Host"
 		echoContent red "=============================================================="
 		read -r -p "Please select:" selectCDNType
         case ${selectCDNType} in
@@ -3745,6 +3790,9 @@ updateV2RayCDN() {
             ;;
         4)
             read -r -p "Please enter the CDN IP or domain name you want to customize:" setDomain
+            ;;
+	5)
+            setDomain=${currentHost}
             ;;
         esac
 
@@ -4184,20 +4232,26 @@ ipv6Routing() {
     	checkIPv6
 	echoContent skyBlue "\nFunction 1/${totalProgress} : IPv6 offload"
 	echoContent red "\n=============================================================="
-	echoContent yellow "1.Add domain name"
-	echoContent yellow "2.Uninstall IPv6 offload"
+	echoContent yellow "1. Check the domain names that have been diverted"
+     	echoContent yellow "2. Add domain name"
+     	echoContent yellow "3. Offload IPv6 traffic"
 	echoContent red "=============================================================="
 	read -r -p "Please select:" ipv6Status
 	if [[ "${ipv6Status}" == "1" ]]; then
+	        jq -r -c '.routing.rules[]|select (.outboundTag=="IPv6-out")|.domain' ${configPath}09_routing.json | jq -r
+        exit 0
+    	elif [[ "${ipv6Status}" == "2" ]]; then
 		echoContent red "=============================================================="
 		echoContent yellow "# Notes\n"
 		echoContent yellow "1.The rule only supports the predefined domain name list [https://github.com/v2fly/domain-list-community]"
 		echoContent yellow "2.Detailed documentation [https://www.v2fly.org/config/routing.html]"
 		echoContent yellow "3.If the kernel fails to start, please check the domain name and add the domain name again"
-		echoContent yellow "4.Special characters are not allowed, pay attention to the format of commas"
-		echoContent yellow "5.Every time you add it, it will be added again, and the last domain name will not be retained"
-		echoContent yellow "6.It is strongly recommended to block domestic websites, enter [cn] below to block"
-		echoContent yellow "7.Input example: google,youtube,facebook,cn\n"
+		echoContent yellow "4. Special characters are not allowed, pay attention to the comma format"
+         	echoContent yellow "5. Each addition is re-added, and the last domain name will not be retained"
+         	echoContent yellow "6. It is strongly recommended to block domestic websites, enter [cn] below to block"
+         	echoContent yellow "7. Input example: google, youtube, facebook, cn\n"
+         	echoContent yellow "8. Support hysteria"
+         	echoContent yellow "9. Input example: google, youtube, facebook, cn\n"
 		read -r -p "Please enter the domain name according to the above example:" domainList
 
         if [[ -f "${configPath}09_routing.json" ]]; then
@@ -4235,7 +4289,7 @@ EOF
 
         echoContent green " ---> Add successfully"
 
-    elif [[ "${ipv6Status}" == "2" ]]; then
+    elif [[ "${ipv6Status}" == "3" ]]; then
 
         unInstallRouting IPv6-out outboundTag
 
@@ -4335,11 +4389,15 @@ blacklist() {
 
 	echoContent skyBlue "\nProgress $1/${totalProgress} : domain name blacklist"
 	echoContent red "\n=============================================================="
-	echoContent yellow "1.Add domain name"
-	echoContent yellow "2.Delete blacklist"
-    echoContent red "=============================================================="
-    read -r -p "Please Select:" blacklistStatus
-    if [[ "${blacklistStatus}" == "1" ]]; then
+	echoContent yellow "1. View blocked domain names"
+	echoContent yellow "2. Add domain name"
+	echoContent yellow "3. Delete blacklist"
+    	echoContent red "=============================================================="
+    	read -r -p "Please Select:" blacklistStatus
+    	if [[ "${blacklistStatus}" == "1" ]]; then
+	jq -r -c '.routing.rules[]|select (.outboundTag=="blackhole-out")|.domain' ${configPath}09_routing.json | jq -r
+        exit 0
+    	elif [[ "${blacklistStatus}" == "2" ]]; then
 		echoContent red "=============================================================="
 		echoContent yellow "# Notes\n"
 		echoContent yellow "1.The rule only supports the predefined domain name list [https://github.com/v2fly/domain-list-community]"
@@ -4347,7 +4405,8 @@ blacklist() {
 		echoContent yellow "3.If the kernel fails to start, please check the domain name and add the domain name again"
 		echoContent yellow "4.Special characters are not allowed, pay attention to the format of commas"
 		echoContent yellow "5.Every time you add it, it will be added again, and the last domain name will not be retained"
-		echoContent yellow "6.Input example: speedtest,facebook\n"
+		echoContent yellow "6. Support hysteria"
+		echoContent yellow "7.Input example: speedtest,facebook\n"
 		read -r -p "Please enter the domain name according to the above example:" domainList
 
         if [[ -f "${configPath}09_routing.json" ]]; then
@@ -4378,7 +4437,7 @@ EOF
 
 		echoContent green " ---> Add successfully"
 
-	elif [[ "${blacklistStatus}" == "2" ]]; then
+	elif [[ "${blacklistStatus}" == "3" ]]; then
 
 		unInstallRouting blackhole-out outboundTag
 
@@ -4462,10 +4521,6 @@ warpRouting() {
 	echoContent skyBlue "\nProgress $1/${totalProgress} : WARP diversion"
 	echoContent red "=============================================================="
 	# echoContent yellow "# Notes\n"
-	# echoContent yellow "1.There are bugs in the official warp after several rounds of testing.Restarting the warp will cause the warp to fail and fail to start, and the CPU usage may also skyrocket"
-	# echoContent yellow "2.The machine can be used normally without restarting the machine.If you have to use the official warp, it is recommended not to restart the machine"
-	# echoContent yellow "3.Some machines still work normally after restarting"
-	# echoContent yellow "4.Can't be used after restart, you can also uninstall and reinstall"
 	# install warp
 	if [[ -z $(which warp-cli) ]]; then
 		echo
@@ -4479,11 +4534,15 @@ warpRouting() {
 	fi
 
 	echoContent red "\n=============================================================="
-	echoContent yellow "1.Add domain name"
-	echoContent yellow "2.Uninstall WARP offload"
+	echoContent yellow "1. Check the domain names that have been diverted"
+	echoContent yellow "2. Add domain name"
+	echoContent yellow "3. Uninstall WARP shunt"
 	echoContent red "=============================================================="
 	read -r -p "Please select:" warpStatus
 	if [[ "${warpStatus}" == "1" ]]; then
+		jq -r -c '.routing.rules[]|select (.outboundTag=="warp-socks-out")|.domain' ${configPath}09_routing.json | jq -r
+        	exit 0
+	elif [[ "${warpStatus}" == "2" ]]; then
 		echoContent red "=============================================================="
 		echoContent yellow "# Notes\n"
 		echoContent yellow "1.The rule only supports the predefined domain name list [https://github.com/v2fly/domain-list-community]"
@@ -4492,7 +4551,8 @@ warpRouting() {
 		echoContent yellow "4.If the kernel fails to start, please check the domain name and add the domain name again"
 		echoContent yellow "5.Special characters are not allowed, pay attention to the format of comma"
 		echoContent yellow "6.Every time you add it, it will be added again, and the last domain name will not be retained"
-		echoContent yellow "7.Input example: google,youtube,facebook\n"
+		echoContent yellow "7. Support hysteria"		
+		echoContent yellow "8.Input example: google,youtube,facebook\n"
 		read -r -p "Please enter the domain name according to the above example:" domainList
 
         if [[ -f "${configPath}09_routing.json" ]]; then
@@ -4529,7 +4589,7 @@ EOF
 
         echoContent green " ---> 添加成功"
 
-    elif [[ "${warpStatus}" == "2" ]]; then
+    elif [[ "${warpStatus}" == "3" ]]; then
 
         ${removeType} cloudflare-warp >/dev/null 2>&1
 
@@ -5299,6 +5359,7 @@ unInstallHysteriaCore() {
     fi
     handleHysteria stop
     rm -rf /etc/v2ray-agent/hysteria/*
+    rm ${configPath}02_socks_inbounds_hysteria.json
     rm -rf /etc/systemd/system/hysteria.service
     echoContent green " ---> Uninstall complete"
 }
@@ -5390,9 +5451,9 @@ subscribe() {
 
 # 切换alpn
 switchAlpn() {
-    echoContent skyBlue "\nFunction 1/${totalProgress} : 切换alpn"
+    echoContent skyBlue "\nFunction 1/${totalProgress} : toggle alpn"
     if [[ -z ${currentAlpn} ]]; then
-        echoContent red " ---> 无法读取alpn，请检查是否Install "
+        echoContent red " ---> cannot read alpn, please check if Install "
         exit 0
     fi
 
@@ -5465,7 +5526,7 @@ menu() {
 	cd "$HOME" || exit
 	clear
 	echoContent red "\n=======V2RAY AGENT============================================"
-	echoContent green "author:mack-a | Current version: v2.6.25-$ENVERSION"
+	echoContent green "author:mack-a | Current version: v2.7.1-$ENVERSION"
 	echoContent green "Github: github.com/mack-a/v2ray-agent or Telegram: t.me/mackaff "
 	echoContent green "Github: github.com/ExtremeDot/v2ray-agent [Translate and Some changes] "
 	showInstallStatus
