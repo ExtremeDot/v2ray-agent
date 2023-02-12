@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PATCH1-TEST 1
-ENVERSION=a3
+ENVERSION=a4
 # 检测区
 # -------------------------------------------------------------
 # 检查系统
@@ -3173,107 +3173,71 @@ defaultBase64Code() {
     if [[ "${type}" == "vlesstcp" ]]; then
 
         if [[ "${coreInstallType}" == "1" ]] && echo "${currentInstallProtocolType}" | grep -q 0; then
-            echoContent yellow " ---> General Format(VLESS+TCP+TLS/xtls-rprx-vision)"
-            echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
-			echo "vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email} " | qrencode -s 10 -m 1 -t UTF8
-
-            echoContent yellow " ---> FORMAT (VLESS+TCP+TLS/xtls-rprx-vision)"
-            echoContent green "TYPE:VLESS，ADDRESS:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:tcp，flow:xtls-rprx-vision，ACCOUNT:${email}\n"
-            cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+		echoContent yellow " --->  (VLESS+TCP+TLS/xtls-rprx-vision)"
+		echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
+		echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentHost}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dtcp%26${currentHost}%3D${currentHost}%26headerType%3Dnone%26sni%3D${currentHost}%26flow%3Dxtls-rprx-vision%23${email}\n"
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 vless://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=tls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}
 EOF
-            echoContent yellow " ---> QR code VLESS(VLESS+TCP+TLS/xtls-rprx-vision)"
-            echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentHost}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dtcp%26${currentHost}%3D${currentHost}%26headerType%3Dnone%26sni%3D${currentHost}%26flow%3Dxtls-rprx-vision%23${email}\n"
 
-            echoContent skyBlue "----------------------------------------------------------------------------------"
+echoContent skyBlue "----------------------------------------------------------------------------------"
 
         elif [[ "${coreInstallType}" == 2 ]]; then
-            echoContent yellow " ---> General Format(VLESS+TCP+TLS)"
-            echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email}\n"
-			echo "vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email} " | qrencode -s 10 -m 1 -t UTF8
-
-            echoContent yellow " ---> FORMAT (VLESS+TCP+TLS)"
-            echoContent green "    TYPE:VLESS，ADDRESS:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:tcp，ACCOUNT:${email}\n"
-
-            cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+		echoContent yellow " ---> VLESS+TCP+TLS)"
+		echoContent green "    vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email}\n"
+		echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3a%2f%2f${id}%40${currentHost}%3a${currentDefaultPort}%3fsecurity%3dtls%26encryption%3dnone%26host%3d${currentHost}%26headerType%3dnone%26type%3dtcp%23${email}\n"
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 vless://${id}@${currentHost}:${currentDefaultPort}?security=tls&encryption=none&host=${currentHost}&headerType=none&type=tcp#${email}
 EOF
-            echoContent yellow " ---> QR code VLESS(VLESS+TCP+TLS)"
-            echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3a%2f%2f${id}%40${currentHost}%3a${currentDefaultPort}%3fsecurity%3dtls%26encryption%3dnone%26host%3d${currentHost}%26headerType%3dnone%26type%3dtcp%23${email}\n"
-        fi
+	fi
 
-    elif [[ "${type}" == "trojanTCPXTLS" ]]; then
-        echoContent yellow " ---> General Format(Trojan+TCP+TLS/xtls-rprx-vision)"
-        echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
-		echo "trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email} " | qrencode -s 10 -m 1 -t UTF8
-
-        echoContent yellow " ---> FORMAT (Trojan+TCP+TLS/xtls-rprx-vision)"
-        echoContent green "TYPE:Trojan，ADDRESS:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:xtls，TRASNSPORT:tcp，flow:xtls-rprx-vision，ACCOUNT:${email}\n"
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+	elif [[ "${type}" == "trojanTCPXTLS" ]]; then
+        	echoContent yellow " ---> (Trojan+TCP+TLS/xtls-rprx-vision)"
+		echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}\n"
+		echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3A%2F%2F${id}%40${currentHost}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dxtls%26type%3Dtcp%26${currentHost}%3D${currentHost}%26headerType%3Dnone%26sni%3D${currentHost}%26flow%3Dxtls-rprx-vision%23${email}\n"      
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 trojan://${id}@${currentHost}:${currentDefaultPort}?encryption=none&security=xtls&type=tcp&host=${currentHost}&headerType=none&sni=${currentHost}&flow=xtls-rprx-vision#${email}
 EOF
-        echoContent yellow " ---> QR code Trojan(Trojan+TCP+TLS/xtls-rprx-vision)"
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3A%2F%2F${id}%40${currentHost}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dxtls%26type%3Dtcp%26${currentHost}%3D${currentHost}%26headerType%3Dnone%26sni%3D${currentHost}%26flow%3Dxtls-rprx-vision%23${email}\n"
 
-    elif [[ "${type}" == "vmessws" ]]; then
+	elif [[ "${type}" == "vmessws" ]]; then
         qrCodeBase64Default=$(echo -n "{\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}vws\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}" | base64 -w 0)
         qrCodeBase64Default="${qrCodeBase64Default// /}"
-
-        echoContent yellow " ---> Global json(VMess+WS+TLS)"
-        echoContent green "    {\"port\":${currentDefaultPort},\"ps\":\"${email}\",\"tls\":\"tls\",\"id\":\"${id}\",\"aid\":0,\"v\":2,\"host\":\"${currentHost}\",\"type\":\"none\",\"path\":\"/${currentPath}vws\",\"net\":\"ws\",\"add\":\"${currentAdd}\",\"allowInsecure\":0,\"method\":\"none\",\"peer\":\"${currentHost}\",\"sni\":\"${currentHost}\"}\n"
-        echoContent yellow " ---> Global vmess(VMess+WS+TLS)Link"
+	echoContent yellow " ---> (VMess+WS+TLS)Link"
         echoContent green "    vmess://${qrCodeBase64Default}\n"
-		echo "vmess://${qrCodeBase64Default} " | qrencode -s 10 -m 1 -t UTF8
-        echoContent yellow " ---> QR code vmess(VMess+WS+TLS)"
-
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+        
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 vmess://${qrCodeBase64Default}
 EOF
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vmess://${qrCodeBase64Default}\n"
+	echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vmess://${qrCodeBase64Default}\n"
 
-    elif [[ "${type}" == "vlessws" ]]; then
+	elif [[ "${type}" == "vlessws" ]]; then
 
-        echoContent yellow " ---> General Format(VLESS+WS+TLS)"
+        echoContent yellow " ---> (VLESS+WS+TLS)"
         echoContent green "    vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=ws&host=${currentHost}&sni=${currentHost}&path=/${currentPath}ws#${email}\n"
-		echo "vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=ws&host=${currentHost}&sni=${currentHost}&path=/${currentPath}ws#${email} " | qrencode -s 10 -m 1 -t UTF8
-
-        echoContent yellow " ---> FORMAT (VLESS+WS+TLS)"
-        echoContent green "    TYPE:VLESS，ADDRESS:${currentAdd}，FAKE DOMAIN/SNI:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:ws，PATH:/${currentPath}ws，ACCOUNT:${email}\n"
-
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=ws&host=${currentHost}&sni=${currentHost}&path=/${currentPath}ws#${email}
 EOF
 
-        echoContent yellow " ---> QR code VLESS(VLESS+WS+TLS)"
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dws%26host%3D${currentHost}%26sni%3D${currentHost}%26path%3D%252f${currentPath}ws%23${email}"
+        echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dws%26host%3D${currentHost}%26sni%3D${currentHost}%26path%3D%252f${currentPath}ws%23${email}"
 
     elif [[ "${type}" == "vlessgrpc" ]]; then
 
-        echoContent yellow " ---> General Format(VLESS+gRPC+TLS)"
+        echoContent yellow " ---> (VLESS+gRPC+TLS)"
         echoContent green "    vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=grpc&host=${currentHost}&path=${currentPath}grpc&serviceName=${currentPath}grpc&alpn=h2&sni=${currentHost}#${email}\n"
-		echo "vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=grpc&host=${currentHost}&path=${currentPath}grpc&serviceName=${currentPath}grpc&alpn=h2&sni=${currentHost}#${email}" | qrencode -s 10 -m 1 -t UTF8
-        echoContent yellow " ---> FORMAT (VLESS+gRPC+TLS)"
-        echoContent green "    TYPE:VLESS，ADDRESS:${currentAdd}，FAKE DOMAIN/SNI:${currentHost}，PORT:${currentDefaultPort}，USER ID:${id}，SECURITY:tls，TRASNSPORT:gRPC，alpn:h2，serviceName:${currentPath}grpc，ACCOUNT:${email}\n"
-
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 vless://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&security=tls&type=grpc&host=${currentHost}&path=${currentPath}grpc&serviceName=${currentPath}grpc&alpn=h2&sni=${currentHost}#${email}
 EOF
-        echoContent yellow " ---> QR code VLESS(VLESS+gRPC+TLS)"
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dgrpc%26host%3D${currentHost}%26serviceName%3D${currentPath}grpc%26path%3D${currentPath}grpc%26sni%3D${currentHost}%26alpn%3Dh2%23${email}"
-		echo "vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dgrpc%26host%3D${currentHost}%26serviceName%3D${currentPath}grpc%26path%3D${currentPath}grpc%26sni%3D${currentHost}%26alpn%3Dh2%23${email}" | qrencode -s 10 -m 1 -t UTF8
+	echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=vless%3A%2F%2F${id}%40${currentAdd}%3A${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26type%3Dgrpc%26host%3D${currentHost}%26serviceName%3D${currentPath}grpc%26path%3D${currentPath}grpc%26sni%3D${currentHost}%26alpn%3Dh2%23${email}"
 
     elif [[ "${type}" == "trojan" ]]; then
         # URLEncode
         echoContent yellow " ---> Trojan(TLS)"
         echoContent green "    trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${currentHost}_Trojan\n"
-		echo "trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${currentHost}_Trojan" | qrencode -s 10 -m 1 -t UTF8
 
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 trojan://${id}@${currentHost}:${currentDefaultPort}?peer=${currentHost}&sni=${currentHost}&alpn=http/1.1#${email}_Trojan
 EOF
-        echoContent yellow " ---> QR code Trojan(TLS)"
-        echo "trojan%3a%2f%2f${id}%40${currentHost}%3a${port}%3fpeer%3d${currentHost}%26sni%3d${currentHost}%26alpn%3Dhttp/1.1%23${email} " | qrencode -s 10 -m 1 -t UTF8
-		echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentHost}%3a${port}%3fpeer%3d${currentHost}%26sni%3d${currentHost}%26alpn%3Dhttp/1.1%23${email}\n"
+	echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentHost}%3a${port}%3fpeer%3d${currentHost}%26sni%3d${currentHost}%26alpn%3Dhttp/1.1%23${email}\n"
 		
 
     elif [[ "${type}" == "trojangrpc" ]]; then
@@ -3281,25 +3245,23 @@ EOF
 
         echoContent yellow " ---> Trojan gRPC(TLS)"
         echoContent green "    trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email}\n"
-		echo "trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email} " | qrencode -s 10 -m 1 -t UTF8
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 trojan://${id}@${currentAdd}:${currentDefaultPort}?encryption=none&peer=${currentHost}&security=tls&type=grpc&sni=${currentHost}&alpn=h2&path=${currentPath}trojangrpc&serviceName=${currentPath}trojangrpc#${email}
 EOF
-        echoContent yellow " ---> QR code Trojan gRPC(TLS)"
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentAdd}%3a${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26peer%3d${currentHost}%26type%3Dgrpc%26sni%3d${currentHost}%26path%3D${currentPath}trojangrpc%26alpn%3Dh2%26serviceName%3D${currentPath}trojangrpc%23${email}\n"
-		echo "trojan%3a%2f%2f${id}%40${currentAdd}%3a${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26peer%3d${currentHost}%26type%3Dgrpc%26sni%3d${currentHost}%26path%3D${currentPath}trojangrpc%26alpn%3Dh2%26serviceName%3D${currentPath}trojangrpc%23${email} " | qrencode -s 10 -m 1 -t UTF8
+echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=trojan%3a%2f%2f${id}%40${currentAdd}%3a${currentDefaultPort}%3Fencryption%3Dnone%26security%3Dtls%26peer%3d${currentHost}%26type%3Dgrpc%26sni%3d${currentHost}%26path%3D${currentPath}trojangrpc%26alpn%3Dh2%26serviceName%3D${currentPath}trojangrpc%23${email}\n"
 
+#HYSTERIA CONFIG
     elif [[ "${type}" == "hysteria" ]]; then
     	local hysteriaEmail=
         hysteriaEmail=$(echo "${email}" | awk -F "[_]" '{print $1}')_hysteria
         echoContent yellow " ---> Hysteria(TLS)"
 	echoContent green "    hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${hysteriaEmail}\n"
-        cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
+
+cat <<EOF >>"/etc/v2ray-agent/subscribe_tmp/${subAccount}"
 hysteria://${currentHost}:${hysteriaPort}?protocol=${hysteriaProtocol}&auth=${id}&peer=${currentHost}&insecure=0&alpn=h3&upmbps=${hysteriaClientUploadSpeed}&downmbps=${hysteriaClientDownloadSpeed}#${hysteriaEmail}
 EOF
-        echoContent yellow " ---> QR code Hysteria(TLS)"
-	echo "hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${hysteriaEmail} " | qrencode -s 10 -m 1 -t UTF8
-        echoContent green "    https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${hysteriaEmail}\n"
+        echoContent green "[QR] https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=hysteria%3A%2F%2F${currentHost}%3A${hysteriaPort}%3Fprotocol%3D${hysteriaProtocol}%26auth%3D${id}%26peer%3D${currentHost}%26insecure%3D0%26alpn%3Dh3%26upmbps%3D${hysteriaClientUploadSpeed}%26downmbps%3D${hysteriaClientDownloadSpeed}%23${hysteriaEmail}\n"
     fi
 
 }
